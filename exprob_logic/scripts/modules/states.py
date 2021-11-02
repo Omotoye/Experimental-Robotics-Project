@@ -18,7 +18,7 @@ import time
 class GoToRoom(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["at room"], 
             # output_keys=[],
             # input_keys=[],
@@ -32,7 +32,7 @@ class GoToRoom(smach.State):
 class GoToOracle(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["reached oracle"], 
             # output_keys=[],
             # input_keys=[],
@@ -46,7 +46,7 @@ class GoToOracle(smach.State):
 class SearchHint(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["no hint", "found hint"], 
             # output_keys=[],
             # input_keys=[],
@@ -63,7 +63,7 @@ class SearchHint(smach.State):
 class CheckHintConsistency(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["consistent","inconsistent"], 
             # output_keys=[],
             # input_keys=[],
@@ -80,7 +80,7 @@ class CheckHintConsistency(smach.State):
 class OracleCheck(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["hypothesis correct","hypothesis wrong"], 
             # output_keys=[],
             # input_keys=[],
@@ -97,7 +97,7 @@ class OracleCheck(smach.State):
 class AnnounceHypothesis(smach.State):
     def __init__(self):
 
-        super().__init__(
+        smach.State.__init__(
             self,  outcomes=["hypothesis announced"], 
             # output_keys=[],
             # input_keys=[],

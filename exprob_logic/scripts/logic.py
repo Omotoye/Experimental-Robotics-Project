@@ -6,8 +6,7 @@ import rospy
 import smach
 
 # Importing the states for the state machines
-from states import *
-
+from modules.states import *
 
 if __name__ == "__main__":
     rospy.init_node("cluedo_state_machine")
@@ -28,7 +27,7 @@ if __name__ == "__main__":
                 "Search Hint",
                 SearchHint(),
                 transitions={
-                    "no hint": "no hint", "found hint": "Check Hint\nConsistency"
+                    "no hint": "hint not found", "found hint": "Check Hint\nConsistency"
                 },
                 # remapping={"": ""},
             )
@@ -39,14 +38,14 @@ if __name__ == "__main__":
                 CheckHintConsistency(),
                 transitions={
                     "inconsistent": "bad hint",
-                    "consistent" : "consistent"
+                    "consistent" : "good hint"
                 },
                 # remapping={"": ""},
             )
 
         # Add sub state machine to the base state machine container 
         smach.StateMachine.add(
-            "Get Hint", GetHint, transitions={"no hint": "GoTo Room", "bad hint":"GoTo Room", "consistent":"GoTo Oracle"}
+            "Get Hint", GetHint, transitions={"hint not found": "GoTo Room", "bad hint":"GoTo Room", "good hint":"GoTo Oracle"}
         )
 
         # Add states to the base container
