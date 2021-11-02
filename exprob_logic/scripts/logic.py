@@ -4,6 +4,7 @@ import rospy
 
 # importing the library for the creation of the state machine
 import smach
+import smach_ros 
 
 # Importing the states for the state machines
 from modules.states import *
@@ -17,7 +18,18 @@ if __name__ == "__main__":
 
     # Open the State Machine Container
     with Cluedo:
-        GetHint = smach.StateMachine(outcomes=["no hint", "consistent", "inconsistent"])
+    	# Add states to the base container
+        smach.StateMachine.add(
+                "GoTo Room",
+                GoToRoom(),
+                transitions={
+                    "at room": "Get Hint",
+                },
+                # remapping={"": ""},
+            )
+            
+            
+        GetHint = smach.StateMachine(outcomes=["hint not found", "good hint", "bad hint"])
 
         # Open the sub state machine container 
         with GetHint: 
@@ -27,14 +39,14 @@ if __name__ == "__main__":
                 "Search Hint",
                 SearchHint(),
                 transitions={
-                    "no hint": "hint not found", "found hint": "Check Hint\nConsistency"
+                    "no hint": "hint not found", "found hint": "Check Hint Consistency"
                 },
                 # remapping={"": ""},
             )
 
             # Add states to the sub state machine container 
             smach.StateMachine.add(
-                "Check Hint\nConsistency",
+                "Check Hint Consistency",
                 CheckHintConsistency(),
                 transitions={
                     "inconsistent": "bad hint",
@@ -47,16 +59,6 @@ if __name__ == "__main__":
         smach.StateMachine.add(
             "Get Hint", GetHint, transitions={"hint not found": "GoTo Room", "bad hint":"GoTo Room", "good hint":"GoTo Oracle"}
         )
-
-        # Add states to the base container
-        smach.StateMachine.add(
-                "GoTo Room",
-                GoToRoom(),
-                transitions={
-                    "at room": "Get Hint",
-                },
-                # remapping={"": ""},
-            )
 
         # Add states to the base container
         smach.StateMachine.add(
