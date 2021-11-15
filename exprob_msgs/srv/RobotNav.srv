@@ -1,0 +1,3 @@
+string goal # This is the id of the Point of Interest 
+---
+string result
