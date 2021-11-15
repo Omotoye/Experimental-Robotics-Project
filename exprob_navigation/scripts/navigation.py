@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 import rospy
 
@@ -17,6 +17,8 @@ def go_to_poi(poi_req):
     # get the coordinate corresponding to the point of interest given 
     goal_cord = rospy.get_param(f'/poi_map_cord/{poi_req.goal}')
     # the goal cord would be used in later versions 
+
+    print(f'Robot Navigating to the {goal_cord.loc_name} at Coordinates x: {goal_cord.x}, y: {goal_cord.y}')
 
     # waste time to simulate motion 
     time.sleep((3 * random.random()))
@@ -49,4 +51,4 @@ if __name__ == '__main__':
     try:
         main()
     except rospy.ROSInterruptException:
-        pass 
+        pass  

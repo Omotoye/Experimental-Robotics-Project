@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+	<rosparam file="$(find exprob_navigation)/params/poi_map_cord.yaml" command="load" />
+	<node name="navigation" pkg="exprob_navigation" type="navigation.py" output="screen" respawn="false" />
+</launch>

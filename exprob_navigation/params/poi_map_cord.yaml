@@ -1,0 +1,61 @@
+# This file contains the coordinate of all the point of interests (poi) in the map
+
+lounge: {
+  loc_name: "Lounge",
+  x: 2.5,
+  y: 2.5
+}
+
+dinning_room: {
+  loc_name: "Dinning Room",
+  x: 2.5, 
+  y: 10.0,
+}
+
+kitchen: {
+  loc_name: "Kitchen",
+  x: 2.5, 
+  y: 17.5
+}
+
+hall: {
+  loc_name: "Hall",
+  x: 10, 
+  y: 2.5
+}
+
+study: {
+  loc_name: "Study",
+  x: 17.5, 
+  y: 2.0
+}
+
+library: {
+  loc_name: "Library",
+  x: 17.5, 
+  y: 7.5
+}
+
+billiard_room: {
+  loc_name: "Billiard Room",
+  x: 17.5, 
+  y: 14.5
+}
+
+conservatory: {
+  loc_name: "Conservatory Room",
+  x: 17.5,
+  y: 18.0
+}
+
+ballroom: {
+  loc_name: "Ball Room", 
+  x: 10.0, 
+  y: 17.5
+}
+
+oracle_room: {
+  loc_name: "Oracle Room",
+  x: 10.0, 
+  y: 10.0
+}
