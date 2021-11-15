@@ -1,5 +1,6 @@
 # This file contains the coordinate of all the point of interests (poi) in the map
 
+
 lounge: {
   loc_name: "Lounge",
   x: 2.5,

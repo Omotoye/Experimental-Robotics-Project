@@ -15,13 +15,15 @@ import random
 
 def go_to_poi(poi_req):
     # get the coordinate corresponding to the point of interest given 
-    goal_cord = rospy.get_param(f'/poi_map_cord/{poi_req.goal}')
+    goal_cord = rospy.get_param(f'/map/{poi_req}')
     # the goal cord would be used in later versions 
 
-    print(f'Robot Navigating to the {goal_cord.loc_name} at Coordinates x: {goal_cord.x}, y: {goal_cord.y}')
+    name = goal_cord["loc_name"]
+
+    print(f"Robot Navigating to the {goal_cord['loc_name']} at Coordinates x: {goal_cord['x']}, y: {goal_cord['y']}")
 
     # waste time to simulate motion 
-    time.sleep((3 * random.random()))
+    time.sleep((5 * random.random()))
 
     # return the result of executing the action
     return 'goal reached'  
@@ -29,7 +31,7 @@ def go_to_poi(poi_req):
 
 def handle_robot_nav(req):
     # Checking if the Point of Interest exists
-    if (rospy.has_param(f'/poi_map_cord/{req.goal}')):
+    if (rospy.has_param(f'/map/{req.goal}')):
         result = go_to_poi(req.goal)
         return RobotNavResponse(result)
     else:
