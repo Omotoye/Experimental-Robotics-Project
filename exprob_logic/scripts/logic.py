@@ -23,41 +23,51 @@ if __name__ == "__main__":
                 "GoTo Room",
                 GoToRoom(),
                 transitions={
-                    "at room": "Get Hint",
+                    "at room": "Knowledge Management",
+                    "not at room": "GoTo Room",
                 },
                 # remapping={"": ""},
             )
             
             
-        GetHint = smach.StateMachine(outcomes=["hint not found", "good hint", "bad hint"])
+        KnowledgeManagement = smach.StateMachine(outcomes=["good hypothesis found","no good hypothesis found" ])
 
         # Open the sub state machine container 
-        with GetHint: 
+        with KnowledgeManagement: 
 
             # Add states to the sub state machine container 
             smach.StateMachine.add(
                 "Search Hint",
                 SearchHint(),
                 transitions={
-                    "no hint": "hint not found", "found hint": "Check Hint Consistency"
+                    "no hint": "Search Hint", "found hint": "Update Knowledge",
                 },
                 # remapping={"": ""},
             )
 
+            smach.StateMachine.add(
+                "Update Knowledge", 
+                UpdateKnowledge(), 
+                transitions={
+                    "knowledge updated": "Check for Consistent & Complete Hypothesis", 
+                    "knowledge update failed": "Update Knowledge",
+                })
+
             # Add states to the sub state machine container 
             smach.StateMachine.add(
-                "Check Hint Consistency",
-                CheckHintConsistency(),
+                "Check for Consistent & Complete Hypothesis",
+                CheckHypothesis(),
                 transitions={
-                    "inconsistent": "bad hint",
-                    "consistent" : "good hint"
+                    "complete & consistent hypo found": "good hypothesis found",
+                    "not found" : "no good hypothesis found",
+                    "check failed": "Check for Consistent & Complete Hypothesis"
                 },
                 # remapping={"": ""},
             )
 
         # Add sub state machine to the base state machine container 
         smach.StateMachine.add(
-            "Get Hint", GetHint, transitions={"hint not found": "GoTo Room", "bad hint":"GoTo Room", "good hint":"GoTo Oracle"}
+            "Knowledge Management", KnowledgeManagement, transitions={"no good hypothesis found": "GoTo Room", "good hypothesis found":"GoTo Oracle"}
         )
 
         # Add states to the base container
@@ -66,6 +76,7 @@ if __name__ == "__main__":
                 GoToOracle(),
                 transitions={
                     "reached oracle": "Announce Hypothesis",
+                    "failed to reach oracle": "GoTo Oracle"
                 },
                 # remapping={"": ""},
             )
@@ -76,6 +87,7 @@ if __name__ == "__main__":
                 AnnounceHypothesis(),
                 transitions={
                     "hypothesis announced": "Oracle (Hypothesis Check)",
+                    "failed to announce": "Announce Hypothesis"
                 },
                 # remapping={"": ""},
             )
@@ -86,7 +98,8 @@ if __name__ == "__main__":
                 OracleCheck(),
                 transitions={
                     "hypothesis correct": "Game Won!!!",
-                    "hypothesis wrong": "GoTo Room"
+                    "hypothesis wrong": "GoTo Room",
+                    "oracle check failed": "Oracle (Hypothesis Check)"
                 },
                 # remapping={"": ""},
             )
