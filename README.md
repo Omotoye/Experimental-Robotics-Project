@@ -18,6 +18,6 @@
 
 ### State Diagram
 
-<img src="UML%20Diagrams/state_diagram_v1.png"  title="Smach Viewer State Diagram Version 1" alt="Smach Viewer State Diagram Version 1" >
+<img src="UML%20Diagrams/state_diagram_v2.png"  title="Smach Viewer State Diagram Version 2" alt="Smach Viewer State Diagram Version 2" >
 
 ---
