@@ -2,15 +2,34 @@
 hints:
   - HP0:
     - who: "Toye"
-    - what: "Gun"
+    - what: "Knife"
     - where: "Library"
   - HP1:
     - who: "Tom"
     - what: "Knife"
-    - where: "Bathroom"
+    - where: "Ball Room"
     - what: "Cutlass"
   - HP2:
     - who: "Jerry"
-    - where: "hall"
+    - where: "Hall"
   - HP3: 
     - where: "Study"
+  - HP4:
+    - who: "Masvidal"
+    - what: "Dagger"
+    - where: "Conservatory"
+    - where: "Dinning Room"
+  - HP5:
+    - who: "Usman"
+    - what: "Riffle" 
+    - where: "Billiard Room"
+  - HP6:
+    - who: "Buhari"
+    - what: "Bomb"
+    - where: "Kitchen" 
+  - HP7: 
+    - who: "Kayode"
+    - what: "Lounge"
+  - HP8:
+    - what: "Spanner"
+    - what: "Rope"
