@@ -1,3 +1,4 @@
 string goal 
 ---
+string result 
 string hint_id # this is the index that represent all the hint data contained in the parameter server 

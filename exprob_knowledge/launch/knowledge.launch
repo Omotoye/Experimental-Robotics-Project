@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+	<rosparam file="$(find exprob_knowledge)/params/cluedo_hints.yaml" command="load" />
+</launch>

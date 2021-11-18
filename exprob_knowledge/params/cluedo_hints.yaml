@@ -1,0 +1,16 @@
+
+hints:
+  - HP0:
+    - who: "Toye"
+    - what: "Gun"
+    - where: "Library"
+  - HP1:
+    - who: "Tom"
+    - what: "Knife"
+    - where: "Bathroom"
+    - what: "Cutlass"
+  - HP2:
+    - who: "Jerry"
+    - where: "hall"
+  - HP3: 
+    - where: "Study"
