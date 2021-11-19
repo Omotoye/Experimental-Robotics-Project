@@ -9,15 +9,16 @@ from exprob_msgs.srv import Oracle, OracleResponse
 import random  
 
 
-class Oracle: 
+class GameOracle: 
 	def __init__(self): 
 		self.possible_hint_ids = []
 		self.hypo = rospy.get_param('/hints')
 		self._get_all_ids()
 		self.true_hypothesis = self._generate_true_hypothesis()
+		print(f'The True hypothesis ID is {self.true_hypothesis}')
 
 		# Initializing the hint service 
-		rospy.Service("/oracle_srv", Oracle, self.oracle_clbk)
+		self.s1 = rospy.Service("/oracle_srv", Oracle, self.oracle_clbk)
 
 	def oracle_clbk(self, msg):
 		response = OracleResponse()
@@ -76,6 +77,6 @@ class Oracle:
 
 if __name__ == '__main__':
 	rospy.init_node('oracle_node')
-	Oracle()
+	GameOracle()
 	rospy.spin()
 
