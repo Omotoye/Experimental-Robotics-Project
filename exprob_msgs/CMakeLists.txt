@@ -59,7 +59,7 @@ message_generation
 add_service_files(
   FILES
   RobotNav.srv
-  CluedoHint.srv
+  Oracle.srv
   Knowledge.srv
 )
 
