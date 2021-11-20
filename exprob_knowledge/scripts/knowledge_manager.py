@@ -41,7 +41,7 @@ class KnowledgeManager:
     	response = KnowledgeResponse()
 
     	if msg.goal == "update":
-    		self.get_hypo_data(msg.hypo_id)
+    		self.get_hypo_data(msg.hint_id)
     		self.add_ind_to_class(self.ind_name, self.class_name)
     		self.call_class_disjoint(self.class_name)
     		self.call_reasoner()
@@ -62,7 +62,7 @@ class KnowledgeManager:
     					good_hypo.append(hypothesis)
     		if len(good_hypo) > 0:
     			response.result = 'hypo found'
-    			response.hint_ids = good_hypo
+    			response.hypo_ids = good_hypo
     		else:
     			response.result = 'no hypo found' 
 
@@ -74,15 +74,15 @@ class KnowledgeManager:
 
     def get_hypo_data(self, hypo_id):
     	i, j = list(hypo_id)
-        self.hypo_name, = list(self.hypo[i])
-        self.objectprop_name, = list(self.hypo[i][self.hypo_name][j])
-        self.ind_name = self.hypo[i][self.hypo_name][j][self.objectprop_name]
-        if self.objectprop_name == 'who':
-            self.class_name = 'PERSON'
-        elif self.objectprop_name == 'where':
-            self.class_name = 'PLACE'
-        elif self.objectprop_name == 'what':
-            self.class_name = 'WEAPON'
+    	self.hypo_name, = list(self.hypo[int(i)])
+    	self.objectprop_name, = list(self.hypo[int(i)][self.hypo_name][int(j)])
+    	self.ind_name = self.hypo[int(i)][self.hypo_name][int(j)][self.objectprop_name]
+    	if self.objectprop_name == 'who':
+    		self.class_name = 'PERSON'
+    	elif self.objectprop_name == 'where':
+    		self.class_name = 'PLACE'
+    	elif self.objectprop_name == 'what':
+    		self.class_name = 'WEAPON'
 
 
     def load_ref_from_file(self, owl_file_path, iri,
