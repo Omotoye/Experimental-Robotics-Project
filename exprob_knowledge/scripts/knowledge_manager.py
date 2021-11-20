@@ -23,7 +23,7 @@ __status__ = "Development"
 
 
 class KnowledgeManager:
-	def __init__(self, client_id, reference_name):
+    def __init__(self, client_id, reference_name):
         self.reference_name = reference_name
         self.client_id = client_id
         self.timeout = 5
@@ -35,8 +35,6 @@ class KnowledgeManager:
         self.load_ref_from_file(self.owl_file_path, self.iri,
                            buffered_manipulation=True, reasoner="PELLET", buffered_reasoner=True, mounted=False)
         rospy.Service("/knowledge_srv", Knowledge, self.knowledge_clbk)
-
-
 
 
     def knowledge_clbk(self, msg):
@@ -76,15 +74,15 @@ class KnowledgeManager:
 
     def get_hypo_data(self, hypo_id):
     	i, j = list(hypo_id)
-		self.hypo_name, = list(hypo[i])
-		self.objectprop_name, = list(self.hypo[i][self.hypo_name][j])
-		self.ind_name = self.hypo[i][self.hypo_name][j][self.objectprop_name]
-		if self.objectprop_name == 'who':
-			self.class_name = 'PERSON'
-		elif self.objectprop_name == 'where':
-			self.class_name = 'PLACE'
-		elif self.objectprop_name == 'what':
-			self.class_name = 'WEAPON'
+        self.hypo_name, = list(self.hypo[i])
+        self.objectprop_name, = list(self.hypo[i][self.hypo_name][j])
+        self.ind_name = self.hypo[i][self.hypo_name][j][self.objectprop_name]
+        if self.objectprop_name == 'who':
+            self.class_name = 'PERSON'
+        elif self.objectprop_name == 'where':
+            self.class_name = 'PLACE'
+        elif self.objectprop_name == 'what':
+            self.class_name = 'WEAPON'
 
 
     def load_ref_from_file(self, owl_file_path, iri,
@@ -121,15 +119,14 @@ class KnowledgeManager:
 
         if not res.success:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
-
-
-	def call_class_disjoint(self, class_name):
-		try:
+    
+    def call_class_disjoint(self, class_name):
+        try:
             res = self.call('DISJOINT', 'IND', 'CLASS', [class_name])
     
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             raise ArmorServiceCallError(
-                "Service call failed upon adding individual {0} to class {1}: {2}".format(ind_name, class_name, e))
+                "Service call failed upon calling disjoint to class {1}: {2}".format(class_name, e))
     
         except rospy.ROSException:
             raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
@@ -139,16 +136,14 @@ class KnowledgeManager:
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
-		except rospy.ServiceException as e:
-			print(f'Service call failed: {e}')
 
-	def call_reasoner(self):
-		try:
+    def call_reasoner(self):
+        try:
             res = self.call('REASON', '', '', [])
     
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             raise ArmorServiceCallError(
-                "Service call failed upon adding individual {0} to class {1}: {2}".format(ind_name, class_name, e))
+                "Service call failed upon calling reasoner: {2}".format(e))
     
         except rospy.ROSException:
             raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
@@ -158,10 +153,7 @@ class KnowledgeManager:
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
-		except rospy.ServiceException as e:
-			print(f'Service call failed: {e}') 
-
-	def ind_b2_class(self, class_name):
+    def ind_b2_class(self, class_name):
         """
         Query the list of all individuals belonging to a class.
     
@@ -190,7 +182,8 @@ class KnowledgeManager:
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
-	def add_ind_to_class(self, ind_name, class_name):
+    
+    def add_ind_to_class(self, ind_name, class_name):
         """
         Add an individual to a class.
     
@@ -212,7 +205,7 @@ class KnowledgeManager:
         try:
             res = self.call('ADD', 'IND', 'CLASS', [ind_name, class_name])
     
-        except rospy.ServiceException, e:
+        except rospy.ServiceException as e:
             raise ArmorServiceCallError(
                 "Service call failed upon adding individual {0} to class {1}: {2}".format(ind_name, class_name, e))
     
@@ -261,7 +254,7 @@ class KnowledgeManager:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
     def announce_hypo(self):
-		pass 
+        pass 
 
     def call(self, command, first_spec, second_spec, args_list):
         req = self._prepare_request(command, first_spec, second_spec, args_list)

@@ -9,7 +9,7 @@ import actionlib
 from actionlib_msgs.msg._GoalStatus import GoalStatus
 
 # Here we bring in all the messages required to interface with each of the nodes
-## TODO: Import all the required messages for services and actions. 
+## TODO: Import all the required messages for services and actions.
 
 import time
 
@@ -19,10 +19,12 @@ class GoToRoom(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["at room", "not at room"], 
+            self,
+            outcomes=["at room", "not at room"],
             # output_keys=[],
             # input_keys=[],
         )
+
     def execute(self, userdata):
         if True:
             return "at room"
@@ -35,14 +37,16 @@ class GoToOracle(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["reached oracle", "failed to reach oracle"], 
+            self,
+            outcomes=["reached oracle", "failed to reach oracle"],
             # output_keys=[],
             # input_keys=[],
         )
+
     def execute(self, userdata):
-        if True: 
+        if True:
             return "reached oracle"
-        else: 
+        else:
             return "failed to reach oracle"
 
 
@@ -51,16 +55,17 @@ class SearchHint(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["no hint", "found hint"], 
+            self,
+            outcomes=["no hint", "found hint"],
             # output_keys=[],
             # input_keys=[],
         )
 
     def execute(self, userdata):
-        if True: 
+        if True:
             return "found hint"
-        else: 
-            return "no hint" 
+        else:
+            return "no hint"
 
 
 ###+++++++++++++++++++ Check Hypothesis +++++++++++++++++++++++++###
@@ -68,18 +73,19 @@ class CheckHypothesis(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["complete & consistent hypo found","not found", "check failed"], 
+            self,
+            outcomes=["complete & consistent hypo found", "not found", "check failed"],
             # output_keys=[],
             # input_keys=[],
         )
 
     def execute(self, userdata):
-        x = False 
-        if True: 
-            return "complete & consistent hypo found" 
-        elif x: 
+        x = False
+        if True:
+            return "complete & consistent hypo found"
+        elif x:
             return "check failed"
-        else: 
+        else:
             return "not found"
 
 
@@ -88,15 +94,16 @@ class UpdateKnowledge(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["knowledge updated","knowledge update failed"], 
+            self,
+            outcomes=["knowledge updated", "knowledge update failed"],
             # output_keys=[],
             # input_keys=[],
         )
 
     def execute(self, userdata):
-        if True: 
-            return "knowledge updated" 
-        else: 
+        if True:
+            return "knowledge updated"
+        else:
             return "knowledge update failed"
 
 
@@ -105,18 +112,19 @@ class OracleCheck(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["hypothesis correct","hypothesis wrong", "oracle check failed"], 
+            self,
+            outcomes=["hypothesis correct", "hypothesis wrong", "oracle check failed"],
             # output_keys=[],
             # input_keys=[],
         )
-    
+
     def execute(self, userdata):
         x = False
-        if True: 
-            return "hypothesis correct" 
-        elif x: 
+        if True:
+            return "hypothesis correct"
+        elif x:
             return "oracle check failed"
-        else: 
+        else:
             return "hypothesis wrong"
 
 
@@ -125,18 +133,14 @@ class AnnounceHypothesis(smach.State):
     def __init__(self):
 
         smach.State.__init__(
-            self,  outcomes=["hypothesis announced", "failed to announce"], 
+            self,
+            outcomes=["hypothesis announced", "failed to announce"],
             # output_keys=[],
             # input_keys=[],
         )
-    
+
     def execute(self, userdata):
-        if True: 
+        if True:
             return "hypothesis announced"
-        else: 
+        else:
             return "failed to announce"
-
-
-
-
-

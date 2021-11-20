@@ -3,54 +3,56 @@
 import rospy
 
 # Brings in the SimpleActionClient
-# import actionlib  # would be needed for later versions 
+# import actionlib  # would be needed for later versions
 
-# the robot nav service messages  
+# the robot nav service messages
 from exprob_msgs.srv import RobotNav, RobotNavResponse
 
-# for wasting time 
+# for wasting time
 import time
-import random  
+import random
 
 
 def go_to_poi(poi_req):
-    # get the coordinate corresponding to the point of interest given 
-    goal_cord = rospy.get_param(f'/map/{poi_req}')
-    # the goal cord would be used in later versions 
+    # get the coordinate corresponding to the point of interest given
+    goal_cord = rospy.get_param(f"/map/{poi_req}")
+    # the goal cord would be used in later versions
 
     name = goal_cord["loc_name"]
 
-    print(f"Robot Navigating to the {goal_cord['loc_name']} at Coordinates x: {goal_cord['x']}, y: {goal_cord['y']}")
+    print(
+        f"Robot Navigating to the {goal_cord['loc_name']} at Coordinates x: {goal_cord['x']}, y: {goal_cord['y']}"
+    )
 
-    # waste time to simulate motion 
+    # waste time to simulate motion
     time.sleep((5 * random.random()))
 
     # return the result of executing the action
-    return 'goal reached'  
+    return "goal reached"
 
 
 def handle_robot_nav(req):
     # Checking if the Point of Interest exists
-    if (rospy.has_param(f'/map/{req.goal}')):
+    if rospy.has_param(f"/map/{req.goal}"):
         result = go_to_poi(req.goal)
         return RobotNavResponse(result)
     else:
-        return RobotNavResponse('Invalid POI')
+        return RobotNavResponse("Invalid POI")
 
 
 def main():
-    # Initialize the ros node 
-    rospy.init_node('robot_navigation')
-    
-    # Initialize the service 
-    rospy.Service('robot_nav_srv', RobotNav, handle_robot_nav)
-    
+    # Initialize the ros node
+    rospy.init_node("robot_navigation")
+
+    # Initialize the service
+    rospy.Service("robot_nav_srv", RobotNav, handle_robot_nav)
+
     # Keeps the node alive to listen for client requests
     rospy.spin()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         main()
     except rospy.ROSInterruptException:
-        pass  
+        pass
