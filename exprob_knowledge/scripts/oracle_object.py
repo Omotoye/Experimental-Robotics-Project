@@ -18,7 +18,7 @@ class GameOracle:
 		print(f'The True hypothesis ID is {self.true_hypothesis}')
 
 		# Initializing the hint service 
-		self.s1 = rospy.Service("/oracle_srv", Oracle, self.oracle_clbk)
+		rospy.Service("/oracle_srv", Oracle, self.oracle_clbk)
 
 	def oracle_clbk(self, msg):
 		response = OracleResponse()
@@ -69,7 +69,7 @@ class GameOracle:
 					required_list.sort()
 					test_list.sort()
 			if test_list == required_list:
-				correct_hypo.append(str(i)+str(j))
+				correct_hypo.append(str(i))
 			test_list = []
 		return correct_hypo[random.randint(0,(len(correct_hypo)-1))]
 
@@ -77,6 +77,18 @@ class GameOracle:
 
 if __name__ == '__main__':
 	rospy.init_node('oracle_node')
-	GameOracle()
+	#GameOracle()
+	i, j = 4, 0 
+	hypo = rospy.get_param('/hints')
+	keys = list(hypo[i])
+	akeys = hypo[i][keys[0]][j]
+	bkeys = list(akeys)
+	ckeys = akeys[bkeys[0]]
+
+
+	print(keys)
+	print(akeys)
+	print(bkeys)
+	print(ckeys)
 	rospy.spin()
 

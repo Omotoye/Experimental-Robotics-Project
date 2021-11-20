@@ -1,6 +1,6 @@
-string goal # update, hypo_check, announce_hypo
+string goal # update, hypo check, announce hypo
 string hint_id 
 string hypo_id 
 ---
-string result # updated, hypo_found, not_found, announced 
-string hypo_id 
+string result # updated, hypo found, no hypo found, announced 
+string[] hypo_ids 
