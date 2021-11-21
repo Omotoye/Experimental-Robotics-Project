@@ -5,15 +5,21 @@ import rospy
 import actionlib
 
 from exprob_msgs.msg import RobotFeedback, RobotResult, RobotAction
+from exprob_msgs.srv import Knowledge, Oracle, RobotNav 
+from exprob_msgs.srv import KnowledgeRequest, OracleRequest, RobotNavRequest  
+
+import Camera
 
 
-class FibonacciAction(object):
-    # create messages that are used to publish feedback/result
-    _feedback = RobotFeedback()
-    _result = RobotResult()
-
+class Robot(object):
+    
     def __init__(self, name):
         self._action_name = name
+        # create messages that are used to publish feedback/result
+        self._feedback = RobotFeedback()
+        self._result = RobotResult()
+        self._possible_loc = ["lounge", "dinning_room", "kitchen", "hall", "study", "library", "billiard_room", "conservatory", "ballroom"]
+        self._oracle_pose_id = "oracle_room"
         self._as = actionlib.SimpleActionServer(
             self._action_name,
             RobotAction,
@@ -21,55 +27,128 @@ class FibonacciAction(object):
             auto_start=False,
         )
         self._as.start()
+        self.rate = rospy.Rate(1)
+        self.current_hint_id = None
+        self.current_hypo_id = None
 
     def robot_action_cb(self, goal):
-        # helper variables
-        # r = rospy.Rate(1)
-        # success = True
+      if goal.goal == 'search hint':
+        result = self.consult_oracle(goal.goal)
+        self._result = result.result 
 
-        # # append the seeds for the fibonacci sequence
-        # self._feedback.sequence = []
-        # self._feedback.sequence.append(0)
-        # self._feedback.sequence.append(1)
+      elif goal.goal == 'update knowledge':
+        result = self.call_knowledge(goal.goal)
+        self._result = result.result 
 
-        # # publish info to the console for the user
-        # rospy.loginfo(
-        #     "%s: Executing, creating fibonacci sequence of order %i with seeds %i, %i"
-        #     % (
-        #         self._action_name,
-        #         goal.order,
-        #         self._feedback.sequence[0],
-        #         self._feedback.sequence[1],
-        #     )
-        # )
+      elif goal.goal == 'check hypo':
+        result = self.call_knowledge(goal.goal)
+        self._result = result.result 
 
-        # # start executing the action
-        # for i in range(1, goal.order):
-        #     # check that preempt has not been requested by the client
-        #     if self._as.is_preempt_requested():
-        #         rospy.loginfo("%s: Preempted" % self._action_name)
-        #         self._as.set_preempted()
-        #         success = False
-        #         break
-        #     self._feedback.sequence.append(
-        #         self._feedback.sequence[i] + self._feedback.sequence[i - 1]
-        #     )
-        #     # publish the feedback
-        #     self._as.publish_feedback(self._feedback)
-        #     # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes
-        #     r.sleep()
+      elif goal.goal == 'go to room':
+        result = self.go_to_poi(goal.goal)
+        self._result = result.result 
 
-        # if success:
-        #     self._result.sequence = self._feedback.sequence
-        #     rospy.loginfo("%s: Succeeded" % self._action_name)
-        #     self._as.set_succeeded(self._result)
+      elif goal.goal == 'go to oracle':
+        result = self.go_to_poi(goal.goal)
+        self._result = result.result 
+    
+      elif goal.goal == 'announce hypo':
+        result = self.call_knowledge(goal.goal)
+        self._result = result.result
 
-        ## Things be happening in here
+      elif goal.goal == 'oracle check':
+        result = self.consult_oracle(goal.goal)
+        self._reuslt = result.result
+
+      self.publish_result()
+
+    def call_service(self, req, srv_name, srv_type):
+      rospy.wait_for_service(srv_name)
+      try:
+        response = rospy.ServiceProxy(srv_name, srv_type)
+        return response(req)
+      except rospy.ServiceException as e:
+        print(f'Service call failed: {e}')
+
+
+    def publish_result(self):
+      rospy.loginfo("%s: Succeeded" % self._action_name)
+      self._as.set_succeeded(self._result)
+
+
+    def check_prempt_request(self):
+      # check that preempt has not been requested by the client
+      if self._as.is_preempt_requested():
+        rospy.loginfo("%s: Preempted" % self._action_name)
+        self._as.set_preempted()
+
+    def publish_feedback(self):
+      self._feedback.task_state
+      # publish the feedback
+      self._as.publish_feedback(self._feedback)
+      # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes
+      r.sleep()
+
+
+    def go_to_poi (self, goal):
+      req = RobotNavRequest()
+      if goal == 'go to point':
+        rand_pose = self.get_rand_pose()
+        req.goal = rand_pose 
+
+      elif goal == 'go to oracle':
+        req.goal = self._oracle_pose_id
+
+      response = self.call_service(req=req, srv_name='robot_nav_srv', srv_type=RobotNav())
+
+
+    def consult_oracle(self, goal):
+      if goal == 'generate hint':
+        camera_object = Camera()
+        self.state = "The camera is active and will start looking for hint"
+        self.publish_feedback()
+        result = camera_object.get_hint()
+        if result.result == 'hint found':
+          state = f'A hint of with hind_id: {result.hint_id} has been found'
+          self.publish_feedback()
+          self.current_hint_id = result.hint_id
+        else:
+          state = f'There was a problem with finding hint'
+          self.publish_feedback()
+        return result  
+
+      elif goal == 'check hypo':
+        req = OracleRequest()
+        req.goal = goal 
+        response = self.call_service(req=req, srv_name='/oracle_srv', srv_type=Oracle())
+      
+
+    def call_knowledge(self, goal):
+      req = KnowledgeRequest()
+      if goal == 'hypo check':
+        req.goal = goal 
+        req.hypo_id = self.current_hypo_id
+
+      elif goal == 'update':
+        req.goal = goal 
+        req.hint_id = self.current_hint_id
+
+
+      elif goal == 'announce hypo':
+        req.goal = goal 
+        req.hypo_id = self.current_hypo_id
+
+      response = self.call_service(req=req, srv_name='/knowledge_srv', srv_type=Knowledge())
+
+
+    def get_rand_pose(self):
+      rand_index = random.randint(0, len(self._possible_loc)-1) 
+      return self._possible_loc[rand_index]
 
     
 
 
 if __name__ == "__main__":
     rospy.init_node("robot_object")
-    FibonacciAction(rospy.get_name())
+    Robot(rospy.get_name())
     rospy.spin()
