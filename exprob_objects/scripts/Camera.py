@@ -8,7 +8,10 @@ class Camera:
         self.search_hint()
 
     def get_hint(self):
-        return self.reaponse.hint_id
+        if self.response.result == "ok":
+            return self.response.hint_id
+        if self.response.result == "no new hint":
+            return -1
 
     def search_hint(self):
         req = OracleRequest()

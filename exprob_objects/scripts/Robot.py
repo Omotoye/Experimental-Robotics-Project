@@ -40,20 +40,31 @@ class Robot(object):
         self._as.start()
         self.rate = rospy.Rate(1)
         self.current_hint_id = None
-        self.current_hypo_id = None
+        self.checked_hypo = []
+        self.new_hypo = None
+        self.status = None
 
     def robot_action_cb(self, goal):
         if goal.goal == "search hint":
             result = self.consult_oracle(goal.goal)
-            self._result = result.result
+            self._result = result
 
-        elif goal.goal == "update knowledge":
+        elif goal.goal == "update":
             result = self.call_knowledge(goal.goal)
             self._result = result.result
 
-        elif goal.goal == "check hypo":
+        elif goal.goal == "hypo check":
             result = self.call_knowledge(goal.goal)
-            self._result = result.result
+            if result.result == "hypo found":
+                for item in result.hypo_ids:
+                    if item not in self.checked_hypo:
+                        self.new_hypo = item
+                if self.new_hypo:
+                    self._result = result.result
+                else:
+                    self._result = "not found"
+            else:
+                self._result = "not found"
 
         elif goal.goal == "go to room":
             result = self.go_to_poi(goal.goal)
@@ -72,6 +83,66 @@ class Robot(object):
             self._reuslt = result.result
 
         self.publish_result()
+
+    def go_to_poi(self, goal):
+        req = RobotNavRequest()
+        if goal == "go to point":
+            rand_pose = self.get_rand_pose()
+            req.goal = rand_pose
+
+        elif goal == "go to oracle":
+            req.goal = self._oracle_pose_id
+        self.status = "calling the navigation service...."
+        self.publish_feedback()
+        response = self.call_service(
+            req=req, srv_name="robot_nav_srv", srv_type=RobotNav()
+        )
+
+    def consult_oracle(self, goal):
+        if goal == "search hint":
+            camera_object = Camera()
+            self.status = "The camera is active and will start looking for hint"
+            self.publish_feedback()
+            result = camera_object.get_hint()
+            if result != -1:
+                self.status = f"A hint of with hind_id: {result} has been found"
+                self.publish_feedback()
+                self.current_hint_id = result
+            else:
+                self.status = f"There was a problem with finding hint"
+                self.publish_feedback()
+            return result
+
+        elif goal == "oracle check":
+            req = OracleRequest()
+            req.goal = goal
+            req.hypo_id = self.new_hypo
+            response = self.call_service(
+                req=req, srv_name="/oracle_srv", srv_type=Oracle()
+            )
+            self.new_hypo = None
+            return response
+
+    def call_knowledge(self, goal):
+        req = KnowledgeRequest()
+        if goal == "hypo check":
+            req.goal = goal
+
+        elif goal == "update":
+            req.goal = goal
+            req.hint_id = self.current_hint_id
+
+        elif goal == "announce hypo":
+            req.goal = goal
+            req.hypo_id = self.new_hypo
+        self.status = "calling the knowledge manager service...."
+        self.publish_feedback()
+        response = self.call_service(
+            req=req, srv_name="/knowledge_srv", srv_type=Knowledge()
+        )
+        self.status = "gotten response from the knowledge manager"
+        self.publish_feedback()
+        return response
 
     def call_service(self, req, srv_name, srv_type):
         rospy.wait_for_service(srv_name)
@@ -92,64 +163,13 @@ class Robot(object):
             self._as.set_preempted()
 
     def publish_feedback(self):
-        self._feedback.task_state
+        self.check_prempt_request()
+        self._feedback.task_state = self.status
+        rospy.loginfo("%s: Feedback: %s" % self._action_name, self.status)
         # publish the feedback
         self._as.publish_feedback(self._feedback)
         # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes
         self.rate.sleep()
-
-    def go_to_poi(self, goal):
-        req = RobotNavRequest()
-        if goal == "go to point":
-            rand_pose = self.get_rand_pose()
-            req.goal = rand_pose
-
-        elif goal == "go to oracle":
-            req.goal = self._oracle_pose_id
-
-        response = self.call_service(
-            req=req, srv_name="robot_nav_srv", srv_type=RobotNav()
-        )
-
-    def consult_oracle(self, goal):
-        if goal == "generate hint":
-            camera_object = Camera()
-            self.state = "The camera is active and will start looking for hint"
-            self.publish_feedback()
-            result = camera_object.get_hint()
-            if result.result == "hint found":
-                state = f"A hint of with hind_id: {result.hint_id} has been found"
-                self.publish_feedback()
-                self.current_hint_id = result.hint_id
-            else:
-                state = f"There was a problem with finding hint"
-                self.publish_feedback()
-            return result
-
-        elif goal == "check hypo":
-            req = OracleRequest()
-            req.goal = goal
-            response = self.call_service(
-                req=req, srv_name="/oracle_srv", srv_type=Oracle()
-            )
-
-    def call_knowledge(self, goal):
-        req = KnowledgeRequest()
-        if goal == "hypo check":
-            req.goal = goal
-            req.hypo_id = self.current_hypo_id
-
-        elif goal == "update":
-            req.goal = goal
-            req.hint_id = self.current_hint_id
-
-        elif goal == "announce hypo":
-            req.goal = goal
-            req.hypo_id = self.current_hypo_id
-
-        response = self.call_service(
-            req=req, srv_name="/knowledge_srv", srv_type=Knowledge()
-        )
 
     def get_rand_pose(self):
         rand_index = random.randint(0, len(self._possible_loc) - 1)
