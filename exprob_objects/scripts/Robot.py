@@ -8,7 +8,7 @@ from exprob_msgs.msg import RobotFeedback, RobotResult, RobotAction
 from exprob_msgs.srv import Knowledge, Oracle, RobotNav
 from exprob_msgs.srv import KnowledgeRequest, OracleRequest, RobotNavRequest
 
-import Camera
+from Camera import Camera
 
 import random
 
@@ -61,6 +61,8 @@ class Robot(object):
                         self.new_hypo = item
                 if self.new_hypo:
                     self._result = result.result
+                    self.status = f'Found {self.new_hypo}'
+                    self.publish_feedback()
                 else:
                     self._result = "not found"
             else:
@@ -80,13 +82,13 @@ class Robot(object):
 
         elif goal.goal == "oracle check":
             result = self.consult_oracle(goal.goal)
-            self._reuslt = result.result
+            self._result = result.result
 
         self.publish_result()
 
     def go_to_poi(self, goal):
         req = RobotNavRequest()
-        if goal == "go to point":
+        if goal == "go to room":
             rand_pose = self.get_rand_pose()
             req.goal = rand_pose
 
@@ -97,6 +99,9 @@ class Robot(object):
         response = self.call_service(
             req=req, srv_name="robot_nav_srv", srv_type=RobotNav()
         )
+        self.status = response.result
+        self.publish_feedback()
+        return response
 
     def consult_oracle(self, goal):
         if goal == "search hint":
@@ -165,7 +170,7 @@ class Robot(object):
     def publish_feedback(self):
         self.check_prempt_request()
         self._feedback.task_state = self.status
-        rospy.loginfo("%s: Feedback: %s" % self._action_name, self.status)
+        rospy.loginfo(f"{self._action_name}: Feedback: {self.status}")
         # publish the feedback
         self._as.publish_feedback(self._feedback)
         # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes

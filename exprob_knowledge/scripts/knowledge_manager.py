@@ -68,7 +68,7 @@ class KnowledgeManager:
             if len(_completed) > 0:
                 for hypothesis in _completed:
                     if hypothesis not in _inconsistent:
-                        good_hypo.append(hypothesis)
+                        good_hypo.append(hypothesis[42:-1])
             if len(good_hypo) > 0:
                 response.result = "hypo found"
                 response.hypo_ids = good_hypo

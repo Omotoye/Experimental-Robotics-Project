@@ -29,5 +29,5 @@ class Camera:
         except rospy.ServiceException as e:
             print(f"Service call failed: {e}")
 
-    def decode_image(image_data):
+    def decode_image(self, image_data):
         pass  ##TODO: use computer vision to decode the QRCode
