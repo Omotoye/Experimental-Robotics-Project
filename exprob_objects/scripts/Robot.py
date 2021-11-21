@@ -51,7 +51,8 @@ class Robot(object):
 
         elif goal.goal == "update":
             result = self.call_knowledge(goal.goal)
-            self._result = result.result
+            if result.result:
+                self._result = result.result
 
         elif goal.goal == "hypo check":
             result = self.call_knowledge(goal.goal)
@@ -61,7 +62,7 @@ class Robot(object):
                         self.new_hypo = item
                 if self.new_hypo:
                     self._result = result.result
-                    self.status = f'Found {self.new_hypo}'
+                    self.status = f"Found {self.new_hypo}"
                     self.publish_feedback()
                 else:
                     self._result = "not found"
@@ -70,21 +71,25 @@ class Robot(object):
 
         elif goal.goal == "go to room":
             result = self.go_to_poi(goal.goal)
-            self._result = result.result
+            if result.result:
+                self._result = result.result
 
         elif goal.goal == "go to oracle":
             result = self.go_to_poi(goal.goal)
-            self._result = result.result
+            if result.result:
+                self._result = result.result
 
         elif goal.goal == "announce hypo":
             result = self.call_knowledge(goal.goal)
-            self._result = result.result
+            if result.result:
+                self._result = result.result
 
         elif goal.goal == "oracle check":
             result = self.consult_oracle(goal.goal)
-            self._result = result.result
-
-        self.publish_result()
+            if result.result:
+                self._result = result.result
+        if self._result:
+            self.publish_result()
 
     def go_to_poi(self, goal):
         req = RobotNavRequest()
@@ -158,6 +163,7 @@ class Robot(object):
             print(f"Service call failed: {e}")
 
     def publish_result(self):
+        rospy.loginfo(f"{self._action_name}: Feedback: {self._result}")
         rospy.loginfo("%s: Succeeded" % self._action_name)
         self._as.set_succeeded(self._result)
 
