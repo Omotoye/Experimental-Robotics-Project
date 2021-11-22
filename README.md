@@ -14,7 +14,7 @@
 
 ### Component Diagram
 
-<img src="UML%20Diagrams/component_diagram_v3.png"  title="Component Diagram Version 3" alt="Component Diagram Version 3" >
+<img src="UML%20Diagrams/component_diagram_v3.1.png"  title="Component Diagram Version 3.1" alt="Component Diagram Version 3.1" >
 
 ### State Diagram
 
