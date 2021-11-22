@@ -14,6 +14,16 @@ import random
 
 
 def go_to_poi(poi_req):
+    """This fuction simulates motion in the environment by simply
+    wasting time.
+
+    Args:
+        poi_req (str): The name of the location the robot is supposed to
+        navigate to
+
+    Returns:
+        str: a string return when the simulated goal is reached.
+    """
     # get the coordinate corresponding to the point of interest given
     goal_cord = rospy.get_param(f"/map/{poi_req}")
     # the goal cord would be used in later versions

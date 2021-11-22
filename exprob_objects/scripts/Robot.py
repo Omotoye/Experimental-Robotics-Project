@@ -14,11 +14,19 @@ import random
 
 
 class Robot(object):
+    """This is a class that simulates the robot to perform all the actions
+    in the Cluedo Senario, it takes care of all the action required by the
+    robot in the Cluedo game.
+    """
+
     def __init__(self, name):
         self._action_name = name
         # create messages that are used to publish feedback/result
         self._feedback = RobotFeedback()
         self._result = RobotResult()
+
+        # knowledge of all the id of all the possible location the robot
+        # can navigate to
         self._possible_loc = [
             "lounge",
             "dinning_room",
@@ -45,6 +53,12 @@ class Robot(object):
         self.status = None
 
     def robot_action_cb(self, goal):
+        """This is the callback function for taking care of the robot action
+        client request from the logic state machine.
+
+        Args:
+            goal (str): The goal the logic state requires the robot to perform
+        """
         if goal.goal == "search hint":
             result = self.consult_oracle(goal.goal)
             if result != -1:
@@ -101,6 +115,15 @@ class Robot(object):
             self.publish_result()
 
     def go_to_poi(self, goal):
+        """For sending request to the navigation server
+
+        Args:
+            goal (str): The required goal for the navigation service,
+            go to point or go to oracle.
+
+        Returns:
+            object: reseponse from the navigation server.
+        """
         req = RobotNavRequest()
         if goal == "go to room":
             rand_pose = self.get_rand_pose()
@@ -118,6 +141,14 @@ class Robot(object):
         return response
 
     def consult_oracle(self, goal):
+        """For sending requests to the oracle object.
+
+        Args:
+            goal (str): The required service from the oracle object.
+
+        Returns:
+            object: the response from the oracle object service
+        """
         if goal == "search hint":
             camera_object = Camera()
             self.status = "The camera is active and will start looking for hint"
@@ -144,6 +175,16 @@ class Robot(object):
             return response
 
     def call_knowledge(self, goal):
+        """For calling the knowledge service for perform services like
+        update the Ontology, check for good hypothesis and announce found
+        hypothesis.
+
+        Args:
+            goal (str): update, announce hypo or hypo check
+
+        Returns:
+            object: response from the knowledge service
+        """
         req = KnowledgeRequest()
         if goal == "hypo check":
             req.goal = goal
@@ -165,6 +206,16 @@ class Robot(object):
         return response
 
     def call_service(self, req, srv_name, srv_type):
+        """For calling any type of service
+
+        Args:
+            req (object): The generated request message to be sent to the server
+            srv_name (str): The server name the request is sent to
+            srv_type (object): The object of the service message type
+
+        Returns:
+            object: response from the server that is being called.
+        """
         rospy.wait_for_service(srv_name)
         try:
             response = rospy.ServiceProxy(srv_name, srv_type)
@@ -173,16 +224,21 @@ class Robot(object):
             print(f"Service call failed: {e}")
 
     def publish_result(self):
+        """Publish result to the requesting client"""
         rospy.loginfo("%s: Succeeded" % self._action_name)
         self._as.set_succeeded(self._result)
 
     def check_prempt_request(self):
+        """Checks if preemption was not requested from the client that
+        requested the goal begin performed.
+        """
         # check that preempt has not been requested by the client
         if self._as.is_preempt_requested():
             rospy.loginfo("%s: Preempted" % self._action_name)
             self._as.set_preempted()
 
     def publish_feedback(self):
+        """Publishes the feedback of the goal current status"""
         self.check_prempt_request()
         self._feedback.task_state = self.status
         # publish the feedback
@@ -191,6 +247,11 @@ class Robot(object):
         self.rate.sleep()
 
     def get_rand_pose(self):
+        """Generates a random pose id from the possible location list
+
+        Returns:
+            str: The generated location id
+        """
         rand_index = random.randint(0, len(self._possible_loc) - 1)
         return self._possible_loc[rand_index]
 

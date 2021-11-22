@@ -10,6 +10,10 @@ import random
 
 
 class GameOracle:
+    """This is the Oracle class that takes care of generating hint and
+    determining the right hypothesis
+    """
+
     def __init__(self):
         self.possible_hint_ids = []
         self.hypo = rospy.get_param("/hints")

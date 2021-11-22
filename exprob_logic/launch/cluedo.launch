@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <launch>
+	<!-- The launch file for the navigation node and the target pose parameter server -->
 	<include file="$(find exprob_navigation)/launch/navigation.launch" />
+
+	<!-- The lauch file for the oracle node and the cluedo hint parameter server -->
 	<include file="$(find exprob_knowledge)/launch/oracle.launch" />
+
 	<node name="robot_object" pkg="exprob_objects" type="Robot.py" output="screen" respawn="false" />
 	<node name="logic" pkg="exprob_logic" type="logic.py" output="screen" respawn="false" />
 </launch>

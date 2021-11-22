@@ -3,19 +3,26 @@ import rospy
 # importing the library for the creation of the state machine
 import smach
 
-
 # Brings in the SimpleActionClient
 import actionlib
 from actionlib_msgs.msg._GoalStatus import GoalStatus
 
 # Here we bring in all the messages required to interface with each of the nodes
-## TODO: Import all the required messages for services and actions.
 from exprob_msgs.msg import RobotGoal, RobotResult, RobotAction
-
-import time
 
 
 def call_robot_action(goal_req):
+    """This is a function for calling the robot object action server
+    to perform each of the actions required for a state
+
+    Args:
+        goal_req ([RobotGoal]): The object containing the goal message for the
+        robot action server.
+
+    Returns:
+        [RobotResult]: the response message from the action server
+    """
+
     # Creates the SimpleActionClient, passing the type of the action
     client = actionlib.SimpleActionClient("robot_object", RobotAction)
 
@@ -35,6 +42,12 @@ def call_robot_action(goal_req):
 
 ###+++++++++++++++++++ GoTo Room +++++++++++++++++++++++++###
 class GoToRoom(smach.State):
+    """This is the state class for navigating the robot to a room randomly
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -58,6 +71,13 @@ class GoToRoom(smach.State):
 
 ###+++++++++++++++++++ GoTo Oracle +++++++++++++++++++++++++###
 class GoToOracle(smach.State):
+    """This is the state class for navigating the robot to the oracle location
+    after finding a correct and complete hypothesis
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -81,6 +101,13 @@ class GoToOracle(smach.State):
 
 ###+++++++++++++++++++ Search Hint +++++++++++++++++++++++++###
 class SearchHint(smach.State):
+    """This is the state class for call the action for search for hint in
+    a room
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -105,6 +132,13 @@ class SearchHint(smach.State):
 
 ###+++++++++++++++++++ Check Hypothesis +++++++++++++++++++++++++###
 class CheckHypothesis(smach.State):
+    """This is the state class for asking for ontology for a complete and consistent
+    hypothesis
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -132,6 +166,13 @@ class CheckHypothesis(smach.State):
 
 ###+++++++++++++++++++ Update Knowledge +++++++++++++++++++++++++###
 class UpdateKnowledge(smach.State):
+    """This is the state for updating the cluedo ontology with the new hint
+    that has just been found
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -156,6 +197,13 @@ class UpdateKnowledge(smach.State):
 
 ###+++++++++++++++++++ Oracle (Hypothesis Check) +++++++++++++++++++++++++###
 class OracleCheck(smach.State):
+    """This is the state class for asking the oracle if the found hypothesis is the
+    correct one.
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(
@@ -188,6 +236,13 @@ class OracleCheck(smach.State):
 
 ###+++++++++++++++++++ Announce Hypothesis +++++++++++++++++++++++++###
 class AnnounceHypothesis(smach.State):
+    """This is the state class for announcing the found hypothesis in
+    english language
+
+    Args:
+        smach ([object]): The smach class for initializing the state class
+    """
+
     def __init__(self):
 
         smach.State.__init__(

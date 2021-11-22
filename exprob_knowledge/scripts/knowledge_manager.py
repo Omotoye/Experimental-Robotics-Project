@@ -12,7 +12,7 @@ from armor_msgs.msg import _ArmorDirectiveReq
 # for generating random hint
 import random
 
-from modules.exception_handling import *  
+from modules.exception_handling import *
 
 
 __author__ = "Alessio Capitanelli"
@@ -23,9 +23,13 @@ __maintainer__ = "Alessio Capitanelli"
 __email__ = "alessio.capitanelli@dibris.unige.it"
 __status__ = "Development"
 
+# Most of the code was written by the above mentioned author, it has been refactored for use
+# in the Cluedo Robot Scenario Project
 
 
 class KnowledgeManager:
+    """This is the class that handles communication with the Cluedo OWL Ontology"""
+
     def __init__(self, client_id, reference_name):
         self.reference_name = reference_name
         self.client_id = client_id
@@ -46,9 +50,19 @@ class KnowledgeManager:
         rospy.Service("/knowledge_srv", Knowledge, self.knowledge_clbk)
 
     def knowledge_clbk(self, msg):
+        """The is the callback function for handling the knowledge service
+
+        Args:
+            msg ([Knowledge]): Knowledge manager service message
+
+        Returns:
+            [KnowledgeResponse]: The response sent to the client calling
+            the knowledge service.
+        """
         response = KnowledgeResponse()
 
         if msg.goal == "update":
+            # Update the Ontology with the a new hint
             self.get_hint_data(msg.hint_id)
             self.add_ind_to_class(self.ind_name, self.class_name)
             self.call_class_disjoint(self.class_name)
@@ -61,6 +75,7 @@ class KnowledgeManager:
             response.result = "updated"
 
         elif msg.goal == "hypo check":
+            # Check if a complete and consistent hypothesis exist
             self.call_reasoner()
             good_hypo = []
             _completed = self.ind_b2_class("COMPLETED")
@@ -83,6 +98,12 @@ class KnowledgeManager:
         return response
 
     def get_hint_data(self, hint_id):
+        """This function uses the hint id to get the hint data from the cluedo hint
+        parameter server.
+
+        Args:
+            hint_id ([string]): The hint id for getting the hint from the parameter server.
+        """
         i, j = list(hint_id)
         (self.hypo_name,) = list(self.hypo[int(i)])
         (self.objectprop_name,) = list(self.hypo[int(i)][self.hypo_name][int(j)])
@@ -95,6 +116,13 @@ class KnowledgeManager:
             self.class_name = "WEAPON"
 
     def get_hypo_data(self, hypo_id):
+        """This function uses the hypo id to get the hypo data from the cluedo hint
+        parameter server.
+
+        Args:
+            hypo_id ([string]): The hypo id for getting the hint from the parameter server.
+        """
+
         (hypo_name,) = list(self.hypo[int(hypo_id)])
 
         for items in self.hypo[int(hypo_id)][hypo_name]:
