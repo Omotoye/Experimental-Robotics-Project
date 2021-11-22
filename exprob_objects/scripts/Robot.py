@@ -130,6 +130,7 @@ class Robot(object):
             response = self.call_service(
                 req=req, srv_name="/oracle_srv", srv_type=Oracle()
             )
+            self.checked_hypo.append(self.new_hypo)
             self.new_hypo = None
             return response
 
