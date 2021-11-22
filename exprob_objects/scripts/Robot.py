@@ -57,7 +57,7 @@ class Robot(object):
             if result.result:
                 self._result.result = result.result
             else:
-                self._result.result = 'update failed'
+                self._result.result = "update failed"
 
         elif goal.goal == "hypo check":
             result = self.call_knowledge(goal.goal)
@@ -79,7 +79,7 @@ class Robot(object):
             if result.result:
                 self._result.result = result.result
             else:
-                self._result.result = 'navigation failed'
+                self._result.result = "navigation failed"
 
         elif goal.goal == "go to oracle":
             result = self.go_to_poi(goal.goal)
@@ -182,7 +182,6 @@ class Robot(object):
         if self._as.is_preempt_requested():
             rospy.loginfo("%s: Preempted" % self._action_name)
             self._as.set_preempted()
-
 
     def publish_feedback(self):
         self.check_prempt_request()
