@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
 	<rosparam file="$(find exprob_knowledge)/params/cluedo_hints.yaml" command="load" />
-<!-- 	<node name="hint_manager" pkg="exprob_knowledge" type="hint_manager.py" output="screen" respawn="false" /> -->
+	<node name="oracle_object" pkg="exprob_knowledge" type="oracle_object.py" output="screen" respawn="false" />
+	<node name="knowledge_manager" pkg="exprob_knowledge" type="knowledge_manager.py" output="screen" respawn="false" />
 </launch>

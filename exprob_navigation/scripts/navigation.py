@@ -20,7 +20,7 @@ def go_to_poi(poi_req):
 
     name = goal_cord["loc_name"]
 
-    print(
+    rospy.loginfo(
         f"Robot Navigating to the {goal_cord['loc_name']} at Coordinates x: {goal_cord['x']}, y: {goal_cord['y']}"
     )
 

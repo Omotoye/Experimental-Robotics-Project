@@ -15,7 +15,7 @@ class GameOracle:
         self.hypo = rospy.get_param("/hints")
         self._get_all_ids()
         self.true_hypothesis = self._generate_true_hypothesis()
-        print(f"The True hypothesis ID is {self.true_hypothesis}")
+        rospy.loginfo(f"\n\nThe True hypothesis ID is {self.true_hypothesis}\n\n")
 
         # Initializing the hint service
         rospy.Service("/oracle_srv", Oracle, self.oracle_clbk)

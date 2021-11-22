@@ -77,8 +77,8 @@ class KnowledgeManager:
 
         elif msg.goal == "announce hypo":
             who, what, where = self.get_hypo_data(msg.hypo_id)
-            print("Hey there Oracle!, I have a correct hypothesis for you.\n")
-            print(f"{who} performed the killing at the {where} with a {what}")
+            print("\n\nHey there Oracle!, I have a correct hypothesis for you.\n")
+            print(f"{who} performed the killing at the {where} with a {what}\n\n")
             response.result = "announced"
         return response
 

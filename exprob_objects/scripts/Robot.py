@@ -173,7 +173,6 @@ class Robot(object):
             print(f"Service call failed: {e}")
 
     def publish_result(self):
-        rospy.loginfo(f"{self._action_name}: Feedback: {self._result}")
         rospy.loginfo("%s: Succeeded" % self._action_name)
         self._as.set_succeeded(self._result)
 
@@ -186,7 +185,6 @@ class Robot(object):
     def publish_feedback(self):
         self.check_prempt_request()
         self._feedback.task_state = self.status
-        rospy.loginfo(f"{self._action_name}: Feedback: {self.status}")
         # publish the feedback
         self._as.publish_feedback(self._feedback)
         # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes
