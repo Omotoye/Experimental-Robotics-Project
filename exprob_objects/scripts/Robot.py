@@ -47,12 +47,17 @@ class Robot(object):
     def robot_action_cb(self, goal):
         if goal.goal == "search hint":
             result = self.consult_oracle(goal.goal)
-            self._result = result
+            if result != -1:
+                self._result.result = result
+            else:
+                self._result.result = "no hint"
 
         elif goal.goal == "update":
             result = self.call_knowledge(goal.goal)
             if result.result:
-                self._result = result.result
+                self._result.result = result.result
+            else:
+                self._result.result = 'update failed'
 
         elif goal.goal == "hypo check":
             result = self.call_knowledge(goal.goal)
@@ -61,34 +66,38 @@ class Robot(object):
                     if item not in self.checked_hypo:
                         self.new_hypo = item
                 if self.new_hypo:
-                    self._result = result.result
+                    self._result.result = result.result
                     self.status = f"Found {self.new_hypo}"
                     self.publish_feedback()
                 else:
-                    self._result = "not found"
+                    self._result.result = "not found"
             else:
-                self._result = "not found"
+                self._result.result = "not found"
 
         elif goal.goal == "go to room":
             result = self.go_to_poi(goal.goal)
             if result.result:
-                self._result = result.result
+                self._result.result = result.result
+            else:
+                self._result.result = 'navigation failed'
 
         elif goal.goal == "go to oracle":
             result = self.go_to_poi(goal.goal)
             if result.result:
-                self._result = result.result
+                self._result.result = result.result
 
         elif goal.goal == "announce hypo":
             result = self.call_knowledge(goal.goal)
             if result.result:
-                self._result = result.result
+                self._result.result = result.result
 
         elif goal.goal == "oracle check":
             result = self.consult_oracle(goal.goal)
             if result.result:
-                self._result = result.result
-        if self._result:
+                self._result.result = result.result
+            else:
+                self._result.result = "oracle check failed"
+        if self._result.result:
             self.publish_result()
 
     def go_to_poi(self, goal):
@@ -173,6 +182,7 @@ class Robot(object):
         if self._as.is_preempt_requested():
             rospy.loginfo("%s: Preempted" % self._action_name)
             self._as.set_preempted()
+
 
     def publish_feedback(self):
         self.check_prempt_request()
