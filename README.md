@@ -10,6 +10,8 @@
 
 **Student ID: 5066348**
 
+*for more information about the scripts in the project [click here](https://omotoye.github.io/Experimental-Robotics-Project/)*
+
 ## Proposed Software Architecture
 
 ### Component Diagram
