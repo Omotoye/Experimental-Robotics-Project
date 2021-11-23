@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+"""
+.. module:: logic
+    :platform: Unix
+    :synopsis: Python module for defining the state machine. 
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node defines all the transitions between the states in the state machines and 
+then initializes the state machine structure. 
+    
+"""
+
+
 import rospy
 
 # importing the library for the creation of the state machine

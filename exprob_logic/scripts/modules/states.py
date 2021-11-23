@@ -1,3 +1,17 @@
+"""
+.. module:: states
+    :platform: Unix
+    :synopsis: Python module for initializing all the states of the Cluedo State Machine
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node initializes the states of each of the goals that robot object is required to 
+perform for the Cluedo Game Robot Senario
+    
+Action:
+    /robot_object Sends request of each of the required goals to be performed at each 
+    state.  
+    
+"""
+
 import rospy
 
 # importing the library for the creation of the state machine

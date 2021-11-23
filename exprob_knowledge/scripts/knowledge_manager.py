@@ -1,5 +1,20 @@
 #!/usr/bin/env python
 
+"""
+.. module:: knowledge_manager
+    :platform: Unix
+    :synopsis: Python module communicating with Cluedo OWL Ontology
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node ADD knowledge and QUERIES the Cluedo OWL Ontology through a ROS package 
+called armor.  
+    
+Service:
+    /knowledge_srv accept request of an action to perform on the Cluedo Ontology
+    /armor_interface_srv sends request of some action the armor should perform on the
+    cluedo ontology 
+    
+"""
+
 import rospy
 
 # the oracle service messages

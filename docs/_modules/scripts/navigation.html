@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.navigation &mdash; Experimental Robotics Lab Project v1 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Experimental Robotics Lab Project v1
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Experimental Robotics Lab Project v1</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>scripts.navigation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.navigation</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: navigation</span>
+<span class="sd">    :platform: Unix</span>
+<span class="sd">    :synopsis: Python module for control of a mobile robot to navigate to a target point</span>
+
+<span class="sd">.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com </span>
+
+<span class="sd">This node is supposed, controls a mobile robot to move from it position to some target position</span>
+<span class="sd">but this functionality would be implemented in later versions, for now it just waste time. </span>
+<span class="sd">    </span>
+<span class="sd">Service:</span>
+<span class="sd">    /robot_nav_srv accept a request of the id of the target point of interest </span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+
+<span class="c1"># Brings in the SimpleActionClient</span>
+<span class="c1"># import actionlib  # would be needed for later versions</span>
+
+<span class="c1"># the robot nav service messages</span>
+<span class="kn">from</span> <span class="nn">exprob_msgs.srv</span> <span class="kn">import</span> <span class="n">RobotNav</span><span class="p">,</span> <span class="n">RobotNavResponse</span>
+
+<span class="c1"># for wasting time</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+
+<div class="viewcode-block" id="go_to_poi"><a class="viewcode-back" href="../../index.html#scripts.navigation.go_to_poi">[docs]</a><span class="k">def</span> <span class="nf">go_to_poi</span><span class="p">(</span><span class="n">poi_req</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This fuction simulates motion in the environment by simply</span>
+<span class="sd">    wasting time.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        poi_req (str): The name of the location the robot is supposed to</span>
+<span class="sd">        navigate to</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string return when the simulated goal is reached.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the coordinate corresponding to the point of interest given</span>
+    <span class="n">goal_cord</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/map/</span><span class="si">{</span><span class="n">poi_req</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># the goal cord would be used in later versions</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">goal_cord</span><span class="p">[</span><span class="s2">&quot;loc_name&quot;</span><span class="p">]</span>
+
+    <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Robot Navigating to the </span><span class="si">{</span><span class="n">goal_cord</span><span class="p">[</span><span class="s1">&#39;loc_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> at Coordinates x: </span><span class="si">{</span><span class="n">goal_cord</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, y: </span><span class="si">{</span><span class="n">goal_cord</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># waste time to simulate motion</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">((</span><span class="mi">5</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()))</span>
+
+    <span class="c1"># return the result of executing the action</span>
+    <span class="k">return</span> <span class="s2">&quot;goal reached&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">handle_robot_nav</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+    <span class="c1"># Checking if the Point of Interest exists</span>
+    <span class="k">if</span> <span class="n">rospy</span><span class="o">.</span><span class="n">has_param</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/map/</span><span class="si">{</span><span class="n">req</span><span class="o">.</span><span class="n">goal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">go_to_poi</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">goal</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RobotNavResponse</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RobotNavResponse</span><span class="p">(</span><span class="s2">&quot;Invalid POI&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># Initialize the ros node</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s2">&quot;robot_navigation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the service</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s2">&quot;robot_nav_srv&quot;</span><span class="p">,</span> <span class="n">RobotNav</span><span class="p">,</span> <span class="n">handle_robot_nav</span><span class="p">)</span>
+
+    <span class="c1"># Keeps the node alive to listen for client requests</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ROSInterruptException</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Omotoye Shamsudeen Adekoya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

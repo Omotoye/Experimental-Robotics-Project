@@ -1,0 +1,56 @@
+.. Experimental Robotics Lab Project v1 documentation master file, created by
+   sphinx-quickstart on Mon Nov 22 22:15:15 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Experimental Robotics Lab Project v1's documentation!
+===================================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+
+Experimental Robotics documentation!
+****************************************
+This is the documentation of the Experimental Robotics Lab project package!
+
+
+States of the State Machine Logic
+====================================
+.. automodule:: scripts.states
+   :members:
+
+Robot Object Module 
+======================
+.. automodule:: scripts.Robot
+   :members:
+
+Camera Object Module
+=======================
+.. automodule:: scripts.Camera 
+   :members:
+
+Navigation Module
+===================
+.. automodule:: scripts.navigation
+   :members:
+
+Oracle Object Module
+======================
+.. automodule:: scripts.oracle_object
+   :members:
+
+Knowledge Manager Module 
+==========================
+.. automodule:: scripts.knowledge_manager
+   :members:

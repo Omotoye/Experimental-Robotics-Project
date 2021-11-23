@@ -1,3 +1,15 @@
+"""
+.. module:: Camera
+    :platform: Unix
+    :synopsis: Python module for getting camera data
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node simulates a Camera object which is supposed to take in camera data, 
+decode it and extract useful information(the hint ) to return to the robot object 
+Subscribes to:
+    /camera_topic (for later versions) gets camera data from the camera hardware
+    
+"""
+
 import rospy
 from exprob_msgs.srv import Oracle, OracleRequest
 

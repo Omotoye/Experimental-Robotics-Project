@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.states &mdash; Experimental Robotics Lab Project v1 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Experimental Robotics Lab Project v1
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Experimental Robotics Lab Project v1</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>scripts.states</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.states</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: states</span>
+<span class="sd">    :platform: Unix</span>
+<span class="sd">    :synopsis: Python module for initializing all the states of the Cluedo State Machine</span>
+<span class="sd">.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com </span>
+
+<span class="sd">This node initializes the states of each of the goals that robot object is required to </span>
+<span class="sd">perform for the Cluedo Game Robot Senario</span>
+<span class="sd">    </span>
+<span class="sd">Action:</span>
+<span class="sd">    /robot_object Sends request of each of the required goals to be performed at each </span>
+<span class="sd">    state.  </span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+
+<span class="c1"># importing the library for the creation of the state machine</span>
+<span class="kn">import</span> <span class="nn">smach</span>
+
+<span class="c1"># Brings in the SimpleActionClient</span>
+<span class="kn">import</span> <span class="nn">actionlib</span>
+<span class="kn">from</span> <span class="nn">actionlib_msgs.msg._GoalStatus</span> <span class="kn">import</span> <span class="n">GoalStatus</span>
+
+<span class="c1"># Here we bring in all the messages required to interface with each of the nodes</span>
+<span class="kn">from</span> <span class="nn">exprob_msgs.msg</span> <span class="kn">import</span> <span class="n">RobotGoal</span><span class="p">,</span> <span class="n">RobotResult</span><span class="p">,</span> <span class="n">RobotAction</span>
+
+
+<div class="viewcode-block" id="call_robot_action"><a class="viewcode-back" href="../../index.html#scripts.states.call_robot_action">[docs]</a><span class="k">def</span> <span class="nf">call_robot_action</span><span class="p">(</span><span class="n">goal_req</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a function for calling the robot object action server</span>
+<span class="sd">    to perform each of the actions required for a state</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        goal_req ([RobotGoal]): The object containing the goal message for the</span>
+<span class="sd">        robot action server.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [RobotResult]: the response message from the action server</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Creates the SimpleActionClient, passing the type of the action</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">actionlib</span><span class="o">.</span><span class="n">SimpleActionClient</span><span class="p">(</span><span class="s2">&quot;robot_object&quot;</span><span class="p">,</span> <span class="n">RobotAction</span><span class="p">)</span>
+
+    <span class="c1"># Waits until the action server has started up and started</span>
+    <span class="c1"># listening for goals.</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">wait_for_server</span><span class="p">()</span>
+
+    <span class="c1"># Sends the goal to the action server.</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="n">goal_req</span><span class="p">)</span>
+
+    <span class="c1"># Waits for the server to finish performing the action.</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">wait_for_result</span><span class="p">()</span>
+
+    <span class="c1"># return the result of executing the action</span>
+    <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span></div>
+
+
+<span class="c1">###+++++++++++++++++++ GoTo Room +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="GoToRoom"><a class="viewcode-back" href="../../index.html#scripts.states.GoToRoom">[docs]</a><span class="k">class</span> <span class="nc">GoToRoom</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for navigating the robot to a room randomly</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;at room&quot;</span><span class="p">,</span> <span class="s2">&quot;not at room&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="GoToRoom.execute"><a class="viewcode-back" href="../../index.html#scripts.states.GoToRoom.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;go to room&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;goal reached&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The Robot reached the goal position&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;at room&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The Robot failed to reach the goal position&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;not at room&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ GoTo Oracle +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="GoToOracle"><a class="viewcode-back" href="../../index.html#scripts.states.GoToOracle">[docs]</a><span class="k">class</span> <span class="nc">GoToOracle</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for navigating the robot to the oracle location</span>
+<span class="sd">    after finding a correct and complete hypothesis</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reached oracle&quot;</span><span class="p">,</span> <span class="s2">&quot;failed to reach oracle&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="GoToOracle.execute"><a class="viewcode-back" href="../../index.html#scripts.states.GoToOracle.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;go to oracle&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;goal reached&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The Robot reached the Oracle position&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;reached oracle&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The Robot failed to reach the Oracle position&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;failed to reach oracle&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ Search Hint +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="SearchHint"><a class="viewcode-back" href="../../index.html#scripts.states.SearchHint">[docs]</a><span class="k">class</span> <span class="nc">SearchHint</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for call the action for search for hint in</span>
+<span class="sd">    a room</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;no hint&quot;</span><span class="p">,</span> <span class="s2">&quot;found hint&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SearchHint.execute"><a class="viewcode-back" href="../../index.html#scripts.states.SearchHint.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;search hint&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="s2">&quot;no hint&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hint with ID </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="si">}</span><span class="s2"> was found&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;found hint&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No hint was found&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;no hint&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ Check Hypothesis +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="CheckHypothesis"><a class="viewcode-back" href="../../index.html#scripts.states.CheckHypothesis">[docs]</a><span class="k">class</span> <span class="nc">CheckHypothesis</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for asking for ontology for a complete and consistent</span>
+<span class="sd">    hypothesis</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;complete &amp; consistent hypo found&quot;</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">,</span> <span class="s2">&quot;check failed&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="CheckHypothesis.execute"><a class="viewcode-back" href="../../index.html#scripts.states.CheckHypothesis.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;hypo check&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;hypo found&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;A new Complete and Consistent hypothesis has been found&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;complete &amp; consistent hypo found&quot;</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;No new Complete and Consistent hypothesis was found&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;not found&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;The Ontology query failed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;check failed&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ Update Knowledge +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="UpdateKnowledge"><a class="viewcode-back" href="../../index.html#scripts.states.UpdateKnowledge">[docs]</a><span class="k">class</span> <span class="nc">UpdateKnowledge</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state for updating the cluedo ontology with the new hint</span>
+<span class="sd">    that has just been found</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;knowledge updated&quot;</span><span class="p">,</span> <span class="s2">&quot;knowledge update failed&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="UpdateKnowledge.execute"><a class="viewcode-back" href="../../index.html#scripts.states.UpdateKnowledge.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;update&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;updated&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;The Cluedo Ontology has been updated with the new hint&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;knowledge updated&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;The Ontology update failed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;knowledge update failed&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ Oracle (Hypothesis Check) +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="OracleCheck"><a class="viewcode-back" href="../../index.html#scripts.states.OracleCheck">[docs]</a><span class="k">class</span> <span class="nc">OracleCheck</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for asking the oracle if the found hypothesis is the</span>
+<span class="sd">    correct one.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hypothesis correct&quot;</span><span class="p">,</span> <span class="s2">&quot;hypothesis wrong&quot;</span><span class="p">,</span> <span class="s2">&quot;oracle check failed&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="OracleCheck.execute"><a class="viewcode-back" href="../../index.html#scripts.states.OracleCheck.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;oracle check&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;correct hypothesis&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span>
+                <span class="s2">&quot;Congratulations Player!, you&#39;ve just figured out the correct hypothesis&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;hypothesis correct&quot;</span>
+
+        <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;wrong hypothesis&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span>
+                <span class="s2">&quot;Wrong!, keep getting hints, maybe you&#39;ll eventually figure out the right hypothesis :)&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;hypothesis wrong&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;The Oracle check has failed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;oracle check failed&quot;</span></div></div>
+
+
+<span class="c1">###+++++++++++++++++++ Announce Hypothesis +++++++++++++++++++++++++###</span>
+<div class="viewcode-block" id="AnnounceHypothesis"><a class="viewcode-back" href="../../index.html#scripts.states.AnnounceHypothesis">[docs]</a><span class="k">class</span> <span class="nc">AnnounceHypothesis</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the state class for announcing the found hypothesis in</span>
+<span class="sd">    english language</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        smach ([object]): The smach class for initializing the state class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hypothesis announced&quot;</span><span class="p">,</span> <span class="s2">&quot;failed to announce&quot;</span><span class="p">],</span>
+            <span class="c1"># output_keys=[],</span>
+            <span class="c1"># input_keys=[],</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="AnnounceHypothesis.execute"><a class="viewcode-back" href="../../index.html#scripts.states.AnnounceHypothesis.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+        <span class="n">robot_goal</span> <span class="o">=</span> <span class="n">RobotGoal</span><span class="p">()</span>
+        <span class="n">robot_goal</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="s2">&quot;announce hypo&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">call_robot_action</span><span class="p">(</span><span class="n">robot_goal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;announced&quot;</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span>
+                <span class="s2">&quot;The Robot has announced a complete and Consistent hypothesis&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;hypothesis announced&quot;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;The hypothesis announcement has failed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;failed to announce&quot;</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Omotoye Shamsudeen Adekoya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+"""
+.. module:: oracle_object
+    :platform: Unix
+    :synopsis: Python module for generating hint and confirming hypothesis
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node generate a random hint from the cluedo hint parameter server and also 
+determines the hypothesis that wins the game. 
+    
+Service:
+    /oracle_srv accepts a request to generate hint and check hypothesis.  
+    
+"""
+
 import rospy
 
 # the oracle service messages

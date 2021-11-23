@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+"""
+.. module:: navigation
+    :platform: Unix
+    :synopsis: Python module for control of a mobile robot to navigate to a target point
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node is supposed, controls a mobile robot to move from it position to some target position
+but this functionality would be implemented in later versions, for now it just waste time. 
+    
+Service:
+    /robot_nav_srv accept a request of the id of the target point of interest 
+    
+"""
+
 import rospy
 
 # Brings in the SimpleActionClient

@@ -1,5 +1,20 @@
 #! /usr/bin/env python
 
+"""
+.. module:: Robot
+    :platform: Unix
+    :synopsis: Python module for simulating the robot object 
+.. moduleauthor:: Omotoye Adekoya adekoyaomotoye@gmail.com 
+This node accepts goal commands from the state machine and performs them 
+by calling the necessary services. 
+    
+Service:
+    /oracle_srv sends a request to get hint or confirm hypothesis to the oracle node 
+    /knowledge_srv sends request to communicate with the OWL ontology through armor. 
+    /robot_nav_srv sends a point of interest id for the navigation node to navigate to 
+    
+"""
+
 import rospy
 
 import actionlib
