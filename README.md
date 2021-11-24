@@ -120,9 +120,9 @@ The ARMOR package is an external package used to communicate with the Cluedo OWL
 
 ## State Diagram
 
-<center>
-<img src="images/state_machine.gif"  title="Smach Viewer State Diagram Version 2" alt="Smach Viewer State Diagram Version 2.1" >
-</center>
+<div align="center">
+<img src="images/state_machine.gif"  title="Smach Viewer State Diagram Version 2" width=120% height=130% alt="Smach Viewer State Diagram Version 2.1" >
+</div>
 
 As promised, here is a diagram containing the states of the state machine of the architecture. 
 
@@ -298,6 +298,22 @@ If you didn't follow the initial steps because you already have a workspace, tra
 
 ```bash
 source /home/omotoye/catkin_ws/devel/setup.bash
+```
+
+You also need to make a slight change in the `knowledge_manager.py` script (**_if you didn't follow the compile steps_**); `cd` into the working directory of the exprob_knowledge package and run the command below. 
+
+```bash
+pwd # this would return the absolute path to the working directory. 
+```
+copy the path that is returned and put it in line 53 of the knowledge manager script
+
+```python
+self.owl_file_path = "/root/ros_ws/src/Experimental-Robotics-Project/exprob_knowledge/cluedo_ontology.owl"
+
+# this is what you'll see there in the file, you'll change the value of the self.owl_file_path
+# to the path that was just return to you by "pwd"
+# and add a /cluedo_ontology.owl to the end of the path
+# after this you're good to go. 
 ```
 
 Step 2: run the **ros master** 
