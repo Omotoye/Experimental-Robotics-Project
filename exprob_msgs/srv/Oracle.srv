@@ -1,5 +1,5 @@
 
-string goal 
+string goal # generate hint, oracle check
 string hypo_id 
 ---
 string result 

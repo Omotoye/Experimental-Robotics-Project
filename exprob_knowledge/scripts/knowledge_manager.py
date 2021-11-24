@@ -50,7 +50,7 @@ class KnowledgeManager:
         self.client_id = client_id
         self.timeout = 10
         self._service_name = "/armor_interface_srv"
-        self.owl_file_path = "/root/Desktop/cluedo_ontology.owl"
+        self.owl_file_path = "/root/ros_ws/src/Experimental-Robotics-Project/exprob_knowledge/cluedo_ontology.owl"
         self.iri = "http://www.emarolab.it/cluedo-ontology"
         self._handle = rospy.ServiceProxy(self._service_name, ArmorDirective)
         self.hypo = rospy.get_param("/hints")
