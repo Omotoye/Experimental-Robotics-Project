@@ -237,7 +237,8 @@ Below is a diagram that show the sequence of operation between each of the nodes
 
 # System Limitations and Possible Improvements 
 
-More on this later...
+* As mentioned earlier, the navigation node of this project is not doing any actual navigation; it only prints to target coordinates to the terminal and waste time before returning `target reached` as a response. I some later version of the project (eventually) there would be a simulation environment where the robot can use [ros navigation stack](http://wiki.ros.org/navigation) to move the robot from one location to a target location. 
+* The is no actual model of the robot or simulation environment for the project. In later version of the project there would be a robot model with URDF to move around the simulation environment to perform the aforementioned tasks. 
 
 # Installation and running procedure
 >**NB**: The instructions below are meant for packages that are written for _**ROS Noetic Ninjemys**_.
@@ -310,11 +311,13 @@ roslaunch exprob_logic cluedo.launch
 ```
 If all the above steps for compiling was done right the simulation should start. 
 
-**Optional**
+**Optional:**
 if you want to view the state transitions of the state machine with smach viewer, run the command below **_this would only work if you've fixed the problem with smach viewer and ros noetic_**
 ```bash
 rosrun smach_viewer smach_viewer.py
 ```
+
+>__*to see a video of the demo of this project*__ [click here]()
 
 
 
