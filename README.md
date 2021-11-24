@@ -233,6 +233,7 @@ In this state;
 
 ## Sequence Diagram 
 Below is a diagram that shows the sequence of operations between each of the nodes contained in this project. 
+<img src="UML%20Diagrams/sequence_diagram_v1.png"  title="Sequence Diagram Version 1" alt="Sequence Diagram Version 1" >
 
 
 # System Limitations and Possible Improvements 
