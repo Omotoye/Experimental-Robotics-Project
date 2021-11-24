@@ -120,7 +120,9 @@ The ARMOR package is an external package used to communicate with the Cluedo OWL
 
 ## State Diagram
 
-<img src="UML%20Diagrams/state_diagram_v2.png"  title="Smach Viewer State Diagram Version 2" alt="Smach Viewer State Diagram Version 2.1" >
+<center>
+<img src="images/state_machine.gif"  title="Smach Viewer State Diagram Version 2" alt="Smach Viewer State Diagram Version 2.1" >
+</center>
 
 As promised, here is a diagram containing the states of the state machine of the architecture. 
 
