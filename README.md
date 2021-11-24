@@ -19,8 +19,9 @@
 
 # Introduction 
 
-<img src="images/cluedo.png" title="University of Genoa" alt="University of Genoa" >
-
+<center>
+<img src="images/cluedo_game.png" title="Cluedo Game image" alt="Cluedo Game image" >
+</center>
 
 **Cluedo** is a murder mystery game for three to six players (depending on editions) that was devised in 1943 by British board game designer Anthony E. Pratt.
 The objective of the game is to *determine __who__ murdered the game's victim, __where__ the crime took place, and __what__ weapon was used*. Each player assumes the role of one of the six suspects and attempts to deduce the correct answer by strategically moving around a game board representing the rooms of a mansion and collecting clues about the circumstances of the murder from the other players. [Wikipedia](https://en.wikipedia.org/wiki/Cluedo)
@@ -229,6 +230,93 @@ In this state;
 * A reponse of `correct hypothesis` to the state machine would cause an outcome of `hypothesis correct` which would ends the game by transitioning the state machine to an end point called `Game Won!!!`
 * if the response is `wrong hypothesis`, it causes an outcome of `hypothesis wrong` which would transition to the **GoTo Room** state. 
 * if the check failed, it'll cause an outcome of `oracle check failed` which would cause a transistion back to itself to try again.
+
+## Sequence Diagram 
+Below is a diagram that show the sequence of operation between each of the nodes contained in this project. 
+
+
+# System Limitations and Possible Improvements 
+
+More on this later...
+
+# Installation and running procedure
+>**NB**: The instructions below are meant for packages that are written for _**ROS Noetic Ninjemys**_.
+
+## Compile
+
+First, you create a folder for your catkin workspace
+
+```bash
+mkdir -p ~/ros_ws/src
+```
+
+Clone the package repository
+
+```bash
+cd ~/ros_ws/src
+git clone https://github.com/Omotoye/Experimental-Robotics-Project.git
+```
+
+Once the package has been successfully cloned, you then build the workspace
+
+```bash
+source /opt/ros/noetic/setup.bash
+cd ~/ros_ws/
+catkin_make
+```
+
+### Dependencies
+
+This project depends on two external packages
+* smach
+* armor 
+
+
+To install **armor** consult the [armor](https://github.com/EmaroLab/ros_multi_ontology_references) installation repository
+
+Run the command below to install **smach**
+```bash
+sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach ros-noetic-smach-viewer
+```
+
+> _**Note**_: __smach_viewer__ does not work (_at the time of the writing this readme_) for ros noetic. To use smach viewer, you have to get into the code and make some changes, other than that, every other part of smach works just fine.
+
+
+## Launch
+
+Step 1: source the setup.bash file, if you followed the steps above, then you can enter the command below.
+
+```bash
+source ~/ros_ws/devel/setup.bash
+```
+
+If you didn't follow the initial steps because you already have a workspace, trace a path from your home directory to your catkin workspace down to your setup.bash file. An example is shown below, **_THIS WILL NOT WORK FOR YOU, IT IS JUST AN EXAMPLE TO SHOW HOW IT CAN BE DONE_**
+
+```bash
+source /home/omotoye/catkin_ws/devel/setup.bash
+```
+
+Step 2: run the **ros master** 
+```bash 
+roscore & # the & symbol allows the process to be run as a background process  
+```
+Step 3: run the **armor** server 
+```bash
+rosrun armor execute it.emarolab.armor.ARMORMainService
+```
+Step 4: run the **cluedo** launch file; this launch file will run all the required nodes and load all the required yaml file in a parameter server. 
+```bash
+roslaunch exprob_logic cluedo.launch
+```
+If all the above steps for compiling was done right the simulation should start. 
+
+**Optional**
+if you want to view the state transitions of the state machine with smach viewer, run the command below **_this would only work if you've fixed the problem with smach viewer and ros noetic_**
+```bash
+rosrun smach_viewer smach_viewer.py
+```
+
+
 
 
 
