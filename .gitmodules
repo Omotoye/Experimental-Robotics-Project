@@ -1,0 +1,3 @@
+[submodule "cluerosity"]
+	path = cluerosity
+	url = https://github.com/Omotoye/cluerosity.git
