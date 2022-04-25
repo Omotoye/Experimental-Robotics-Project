@@ -4,7 +4,7 @@
 
 # Experimental Robotics Lab Project (Version 2.0)
 
->**Author: Omotoye Shamsudeen Adekoya**
+>**Author: Omotoye Shamsudeen Adekoya**  
  **Email: adekoyaomotoye@gmail.com** </br>
  **Student ID: 5066348**
 
