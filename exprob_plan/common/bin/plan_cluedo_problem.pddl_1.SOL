@@ -1,0 +1,18 @@
+
+; Version LPG-td-1.0
+; Seed 32674401
+; Problem cluedo_problem.pddl
+; Time 0.02
+; Search time 0.00
+; Parsing time 0.00
+; Mutex time 0.00
+; MetricValue 6.00
+
+0.0002:   (SEARCH-HINT ROOM1) [5.0000]
+5.0004:   (UPDATE-KNOWLEDGE ROOM1) [0.0000]
+5.0006:   (CHECK-HYPOTHESIS) [0.0000]
+5.0008:   (GO-TO-ORACLE ROOM1 ORACLE_LOC) [20.0000]
+25.0010:   (ANNOUNCE-HYPO ORACLE_LOC) [0.0000]
+25.0012:   (ORACLE-CHECK ORACLE_LOC) [0.0000]
+
+
